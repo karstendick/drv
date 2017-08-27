@@ -17,10 +17,13 @@ class Drv:
     def __init__(self, pmf):
         self._pmf = pmf
 
+def die_pmf(n):
+    return Pmf({k: Fraction(1,n) for k in range(1, n+1)})
 
 def main():
     pmf = Pmf({1: Fraction(1,2),
                2: Fraction(1,2)})
+
     import pdb; pdb.set_trace()
     print('done')
 

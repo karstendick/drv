@@ -12,3 +12,10 @@ class TestPmf(unittest.TestCase):
         good_pmf = {1: Fraction(1,2),
                     2: Fraction(1,2)}
         self.assertEqual(Pmf(good_pmf), Pmf(good_pmf))
+
+    def test_die_pmf(self):
+        d4 = {1: Fraction(1,4),
+              2: Fraction(1,4),
+              3: Fraction(1,4),
+              4: Fraction(1,4)}
+        self.assertEqual(d4, die_pmf(4))
