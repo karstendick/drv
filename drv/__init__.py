@@ -16,6 +16,8 @@ class Pmf(defaultdict):
 class Drv:
     def __init__(self, pmf):
         self._pmf = pmf
+    def expected_value(self):
+        return sum([value * probability for value, probability in self._pmf.items()])
 
 def die_pmf(n):
     return Pmf({k: Fraction(1,n) for k in range(1, n+1)})
