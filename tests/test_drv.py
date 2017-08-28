@@ -54,3 +54,11 @@ class TestDrv(unittest.TestCase):
                         10: Fraction(1,24)})
         self.assertEqual(expected, add(d4, d6))
         self.assertEqual(expected, add(d6, d4))
+
+    def test_add_const(self):
+        d4 = die_pmf(4)
+        const3 = const_pmf(3)
+        expected = Pmf({4: Fraction(1,4), 5: Fraction(1,4),
+                        6: Fraction(1,4), 7: Fraction(1,4)})
+        self.assertEqual(expected, add(d4, const3))
+        self.assertEqual(expected, add(const3, d4))

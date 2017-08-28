@@ -51,9 +51,12 @@ class Drv:
 def die_pmf(n):
     return Pmf({k: Fraction(1,n) for k in range(1, n+1)})
 
+def const_pmf(c):
+    return Pmf({c: Fraction(1,1)})
 
 def add(x, y):
-    """Takes two pmfs, x and y, and adds them to get z, the convolution
+    """Takes two pmfs, x and y, and adds them to get z, the convolution. This
+    operation is commutative and associative.
 
     """
     # First, calculate the range of the support of the sum, z:
@@ -74,6 +77,7 @@ def main():
     drv = Drv(die_pmf(6))
     d6 = die_pmf(6)
     d6_2 = die_pmf(6)
+    d6_plus_3 = add(d6, const_pmf(3))
     import pdb; pdb.set_trace()
     print('done')
 
