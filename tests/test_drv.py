@@ -39,3 +39,18 @@ class TestDrv(unittest.TestCase):
     def test_std_dev(self):
         drv = Drv(die_pmf(6))
         self.assertEqual(sqrt(Fraction(35,12)), drv.std_dev())
+
+    def test_add(self):
+        d4 = die_pmf(4)
+        d6 = die_pmf(6)
+        expected = Pmf({2: Fraction(1,24),
+                        3: Fraction(2,24),
+                        4: Fraction(3,24),
+                        5: Fraction(4,24),
+                        6: Fraction(4,24),
+                        7: Fraction(4,24),
+                        8: Fraction(3,24),
+                        9: Fraction(2,24),
+                        10: Fraction(1,24)})
+        self.assertEqual(expected, add(d4, d6))
+        self.assertEqual(expected, add(d6, d4))

@@ -14,6 +14,15 @@ class Pmf(defaultdict):
                              .format(probability_sum))
         defaultdict.__init__(self, int, mapping)
 
+    def support(self):
+        return sorted([value for value, prob in self.items() if prob > 0])
+
+    def min(self):
+        return min(self.support())
+
+    def max(self):
+        return max(self.support())
+
 class Drv:
     """A Drv (discrete random variable) has a Pmf and provides methods for
     calculating statistics on it.
@@ -43,10 +52,28 @@ def die_pmf(n):
     return Pmf({k: Fraction(1,n) for k in range(1, n+1)})
 
 
+def add(x, y):
+    """Takes two pmfs, x and y, and adds them to get z, the convolution
+
+    """
+    # First, calculate the range of the support of the sum, z:
+    z_min = x.min() + y.min()
+    z_max = x.max() + y.max()
+
+    z = defaultdict(int, {})
+    # foreach value in pmf of z:
+    for n in range(z_min, z_max+1):
+        # calculate the convolution
+        z[n] = sum([x[k] * y[n - k]
+                    for k in range(n+1)])
+    return z
+
 def main():
     pmf = Pmf({1: Fraction(1,2),
                2: Fraction(1,2)})
     drv = Drv(die_pmf(6))
+    d6 = die_pmf(6)
+    d6_2 = die_pmf(6)
     import pdb; pdb.set_trace()
     print('done')
 
