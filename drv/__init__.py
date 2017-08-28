@@ -20,11 +20,11 @@ class Drv:
 
     """
     def __init__(self, pmf):
-        self._pmf = pmf
+        self.pmf = pmf
 
     def expected_value(self):
         return sum([value * prob
-                    for value, prob in self._pmf.items()])
+                    for value, prob in self.pmf.items()])
 
     def mean(self):
         return self.expected_value()
@@ -32,7 +32,7 @@ class Drv:
     def variance(self):
         mean = self.mean()
         return sum([prob*value*value
-                    for value, prob in self._pmf.items()]) \
+                    for value, prob in self.pmf.items()]) \
                 - mean*mean
 
     def std_dev(self):
