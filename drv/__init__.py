@@ -69,15 +69,17 @@ def add(x, y):
         # calculate the convolution
         z[n] = sum([x[k] * y[n - k]
                     for k in range(n+1)])
-    return z
+    return Pmf(z)
 
 def main():
     pmf = Pmf({1: Fraction(1,2),
                2: Fraction(1,2)})
-    drv = Drv(die_pmf(6))
     d6 = die_pmf(6)
     d6_2 = die_pmf(6)
     d6_plus_3 = add(d6, const_pmf(3))
+    d4 = die_pmf(4)
+    four_d4 = add(d4, add(d4, add(d4, d4)))
+    drv = Drv(four_d4)
     import pdb; pdb.set_trace()
     print('done')
 
