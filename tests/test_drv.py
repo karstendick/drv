@@ -24,3 +24,14 @@ class TestDrv(unittest.TestCase):
     def test_expected_value(self):
         drv = Drv(die_pmf(6))
         self.assertEqual(Fraction(7,2), drv.expected_value())
+
+    def test_variance(self):
+        # the variance of any fair die of n sides is:
+        # (n^2 - 1)/12
+        for n in range(1,11):
+            drv = Drv(die_pmf(n))
+            self.assertEqual(Fraction(n*n-1, 12), drv.variance())
+
+    def test_std_dev(self):
+        drv = Drv(die_pmf(6))
+        self.assertEqual(sqrt(Fraction(35,12)), drv.std_dev())

@@ -21,16 +21,32 @@ class Drv:
     """
     def __init__(self, pmf):
         self._pmf = pmf
+
     def expected_value(self):
-        return sum([value * probability for value, probability in self._pmf.items()])
+        return sum([value * prob
+                    for value, prob in self._pmf.items()])
+
+    def mean(self):
+        return self.expected_value()
+
+    def variance(self):
+        mean = self.mean()
+        return sum([prob*value*value
+                    for value, prob in self._pmf.items()]) \
+                - mean*mean
+
+    def std_dev(self):
+        return sqrt(self.variance())
+
 
 def die_pmf(n):
     return Pmf({k: Fraction(1,n) for k in range(1, n+1)})
 
+
 def main():
     pmf = Pmf({1: Fraction(1,2),
                2: Fraction(1,2)})
-
+    drv = Drv(die_pmf(6))
     import pdb; pdb.set_trace()
     print('done')
 
