@@ -1,9 +1,10 @@
 from collections import defaultdict
 from fractions import Fraction
+from math import sqrt
 
 class Pmf(defaultdict):
-    """pmf is a defaultdict of int to Fraction, mapping values to
-    probabilities
+    """A Pmf (probability mass function) is a defaultdict of int to Fraction,
+    mapping values to probabilities.
 
     """
     def __init__(self, mapping):
@@ -14,6 +15,10 @@ class Pmf(defaultdict):
         defaultdict.__init__(self, int, mapping)
 
 class Drv:
+    """A Drv (discrete random variable) has a Pmf and provides methods for
+    calculating statistics on it.
+
+    """
     def __init__(self, pmf):
         self._pmf = pmf
     def expected_value(self):
