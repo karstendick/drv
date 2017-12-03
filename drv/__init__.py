@@ -23,6 +23,20 @@ class Pmf(defaultdict):
     def max(self):
         return max(self.support())
 
+class JointPmf(defaultdict):
+    """A JointPmf is a defaultdict of a tuple of 2 ints to Fraction,
+    mapping joint events to probabilities.
+
+    It represents a joint probability function of two independent
+    random variables.
+    """
+    def __init__(self, pmf1, pmf2):
+        mapping = {(event1, event2): prob1 * prob2
+                   for event1, prob1 in pmf1.items()
+                   for event2, prob2 in pmf2.items()
+                   if (prob1 * prob2) != 0}
+        defaultdict.__init__(self, int, mapping)
+    
 class Drv:
     """A Drv (discrete random variable) has a Pmf and provides methods for
     calculating statistics on it.
@@ -71,6 +85,13 @@ def add(x, y):
                     for k in range(n+1)])
     return Pmf(z)
 
+def attack_roll(ac, attack_modifier, damage_pmf, damage_modifier):
+    crits = {20}
+    miss_prob = Fraction(max(1, ac - 1 - attack_modifier), 20)
+    crit_prob = Fraction(len(crits), 20)
+    hit_prob = 1 - miss_prob - crit_prob
+    
+
 def main():
     pmf = Pmf({1: Fraction(1,2),
                2: Fraction(1,2)})
@@ -80,6 +101,15 @@ def main():
     d4 = die_pmf(4)
     four_d4 = add(d4, add(d4, add(d4, d4)))
     drv = Drv(four_d4)
+
+    jpmf = JointPmf(d4, d6)
+
+    d20 = die_pmf(20)
+    d10 = die_pmf(10)
+    atk1 = JointPmf(d20, d10)
+    atk2 = JointPmf(d20, d6)
+    two_attacks = add(atk1, atk2)
+    
     import pdb; pdb.set_trace()
     print('done')
 
