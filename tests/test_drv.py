@@ -3,15 +3,15 @@ from fractions import Fraction
 
 from drv import *
 
-class TestPmf(unittest.TestCase):
+class TestDrv(unittest.TestCase):
     def test_probability_sum(self):
         bad_pmf = {1: Fraction(1,2),
                    2: Fraction(1,2),
                    3: Fraction(1,2)}
-        self.assertRaises(ValueError, Pmf, bad_pmf)
+        self.assertRaises(ValueError, Drv, bad_pmf)
         good_pmf = {1: Fraction(1,2),
                     2: Fraction(1,2)}
-        self.assertEqual(Pmf(good_pmf), Pmf(good_pmf))
+        self.assertEqual(Drv(good_pmf), Drv(good_pmf))
 
     def test_die_pmf(self):
         d4 = {1: Fraction(1,4),
@@ -33,7 +33,7 @@ class TestDrv(unittest.TestCase):
             self.assertEqual(Fraction(n*n-1, 12), drv.variance())
 
     def test_zero_variance(self):
-        drv = Drv(Pmf({1: 1}))
+        drv = Drv(Drv({1: 1}))
         self.assertEqual(0, drv.variance())
 
     def test_std_dev(self):
@@ -43,7 +43,7 @@ class TestDrv(unittest.TestCase):
     def test_add(self):
         d4 = die_pmf(4)
         d6 = die_pmf(6)
-        expected = Pmf({2: Fraction(1,24),
+        expected = Drv({2: Fraction(1,24),
                         3: Fraction(2,24),
                         4: Fraction(3,24),
                         5: Fraction(4,24),
@@ -58,7 +58,7 @@ class TestDrv(unittest.TestCase):
     def test_add_const(self):
         d4 = die_pmf(4)
         const3 = const_pmf(3)
-        expected = Pmf({4: Fraction(1,4), 5: Fraction(1,4),
+        expected = Drv({4: Fraction(1,4), 5: Fraction(1,4),
                         6: Fraction(1,4), 7: Fraction(1,4)})
         self.assertEqual(expected, add(d4, const3))
         self.assertEqual(expected, add(const3, d4))

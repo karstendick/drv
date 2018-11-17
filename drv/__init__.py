@@ -4,8 +4,8 @@ from fractions import Fraction
 from math import sqrt
 
 
-class Pmf(defaultdict):
-    """A Pmf (probability mass function) is a defaultdict of int to Fraction,
+class Drv(defaultdict):
+    """A Drv (discrete random variable) is a defaultdict of int to Fraction,
     mapping values to probabilities.
 
     """
@@ -13,13 +13,13 @@ class Pmf(defaultdict):
         probability_sum = sum(mapping.values())
 
         if probability_sum != 1:
-            raise ValueError("Pmf sum must be 1; received invalid value {}"
+            raise ValueError("Probabilities must sum to 1; received invalid value {}"
                              .format(probability_sum))
 
         neg_probs = {value: prob for value, prob in mapping.items() if prob < 0}
         if neg_probs:
             raise ValueError("Probabilities must be non-negative; received invalid values {}"
-                            .format(neg_probs))
+                             .format(neg_probs))
 
         defaultdict.__init__(self, int, mapping)
 
@@ -32,6 +32,22 @@ class Pmf(defaultdict):
     def max(self):
         return max(self.support())
 
+    def expected_value(self):
+        return sum([value * prob
+                    for value, prob in self.items()])
+
+    def mean(self):
+        return self.expected_value()
+
+    def variance(self):
+        mean = self.mean()
+        return sum([prob*value*value
+                    for value, prob in self.items()]) \
+                - mean*mean
+
+    def std_dev(self):
+        return sqrt(self.variance())
+
     def __str__(self):
         m = {value: round(float(prob), 5) for value, prob in self.items() if prob > 0}
         l = ["{0: >3} {1: >8.2%}".format(value, prob) for value, prob in m.items()]
@@ -40,39 +56,15 @@ class Pmf(defaultdict):
     def __repr__(self):
         return self.__str__()
 
-class Drv:
-    """A Drv (discrete random variable) has a Pmf and provides methods for
-    calculating statistics on it.
-
-    """
-    def __init__(self, pmf):
-        self.pmf = pmf
-
-    def expected_value(self):
-        return sum([value * prob
-                    for value, prob in self.pmf.items()])
-
-    def mean(self):
-        return self.expected_value()
-
-    def variance(self):
-        mean = self.mean()
-        return sum([prob*value*value
-                    for value, prob in self.pmf.items()]) \
-                - mean*mean
-
-    def std_dev(self):
-        return sqrt(self.variance())
-
 
 def die_pmf(n):
-    return Pmf({k: Fraction(1,n) for k in range(1, n+1)})
+    return Drv({k: Fraction(1, n) for k in range(1, n+1)})
 
 def const_pmf(c):
-    return Pmf({c: Fraction(1,1)})
+    return Drv({c: Fraction(1, 1)})
 
 def add(x, y):
-    """Takes two pmfs, x and y, and adds them to get z, the convolution. This
+    """Takes two Drvs, x and y, and adds them to get z, the convolution. This
     operation is commutative and associative.
 
     """
@@ -86,14 +78,14 @@ def add(x, y):
         # calculate the convolution
         z[n] = sum([x[k] * y[n - k]
                     for k in range(n+1)])
-    return Pmf(z)
+    return Drv(z)
 
 def multiply(x, y):
     z = defaultdict(int, {})
     for x_i, y_i in itertools.product(x.support(), y.support()):
         z_i = x_i * y_i
-        z[z_i] += x[x_i]*y[y_i]
-    return Pmf(z)
+        z[z_i] += x[x_i] * y[y_i]
+    return Drv(z)
 
 # TODO: debug this so that it never returns negative probabilities, e.g.:
 # attack_pmf(1, 5)
@@ -104,9 +96,9 @@ def multiply(x, y):
 # TODO: Bug: don't just double damage on a crit; instead, roll more dice
 # i.e.: 2d6, NOT 2*(1d6)
 def attack_pmf(ac, attack_mod):
-    atk_pmf = Pmf({0: Fraction(ac - attack_mod -1, 20),
-                    1: Fraction(20-ac + attack_mod, 20),
-                    2: Fraction(1,20)})
+    atk_pmf = Drv({0: Fraction(ac - attack_mod - 1, 20),
+                   1: Fraction(20 - ac + attack_mod, 20),
+                   2: Fraction(1, 20)})
     return atk_pmf
 # TODO: Likewise, e.g.:
 # attack_dmg_mod_pmf(1, 5)
@@ -114,8 +106,8 @@ def attack_pmf(ac, attack_mod):
 # attack_dmg_mod_pmf(30, 5)
 # defaultdict(<class 'int'>, {0: Fraction(6, 5), 1: Fraction(-1, 5)})
 def attack_dmg_mod_pmf(ac, attack_mod):
-    atk_pmf = Pmf({0: Fraction(ac - attack_mod -1, 20),
-                    1: Fraction(20-ac + attack_mod+1, 20)})
+    atk_pmf = Drv({0: Fraction(ac - attack_mod - 1, 20),
+                   1: Fraction(20 - ac + attack_mod + 1, 20)})
     return atk_pmf
 
 
@@ -127,8 +119,8 @@ def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
     return result
 
 def main():
-    pmf = Pmf({1: Fraction(1,2),
-               2: Fraction(1,2)})
+    pmf = Drv({1: Fraction(1, 2),
+               2: Fraction(1, 2)})
     d6 = die_pmf(6)
     d6_2 = die_pmf(6)
     d6_plus_3 = add(d6, const_pmf(3))
