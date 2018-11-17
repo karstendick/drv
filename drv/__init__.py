@@ -1,4 +1,5 @@
 from collections import defaultdict
+import itertools
 from fractions import Fraction
 from math import sqrt
 
@@ -70,6 +71,40 @@ def add(x, y):
         z[n] = sum([x[k] * y[n - k]
                     for k in range(n+1)])
     return Pmf(z)
+
+def multiply(x, y):
+    z = defaultdict(int, {})
+    for x_i, y_i in itertools.product(x.support(), y.support()):
+        z_i = x_i * y_i
+        z[z_i] += x[x_i]*y[y_i]
+    return Pmf(z)
+
+# TODO: debug this so that it never returns negative probabilities, e.g.:
+# attack_pmf(1, 5)
+# defaultdict(<class 'int'>, {0: Fraction(-1, 4), 1: Fraction(6, 5), 2: Fraction(1, 20)})
+# attack_pmf(30, 5)
+# defaultdict(<class 'int'>, {0: Fraction(6, 5), 1: Fraction(-1, 4), 2: Fraction(1, 20)})
+def attack_pmf(ac, attack_mod):
+    atk_pmf = Pmf({0: Fraction(ac - attack_mod -1, 20),
+                    1: Fraction(20-ac + attack_mod, 20),
+                    2: Fraction(1,20)})
+    return atk_pmf
+# TODO: Likewise, e.g.:
+# attack_dmg_mod_pmf(1, 5)
+# defaultdict(<class 'int'>, {0: Fraction(-1, 4), 1: Fraction(5, 4)})
+# attack_dmg_mod_pmf(30, 5)
+# defaultdict(<class 'int'>, {0: Fraction(6, 5), 1: Fraction(-1, 5)})
+def attack_dmg_mod_pmf(ac, attack_mod):
+    atk_pmf = Pmf({0: Fraction(ac - attack_mod -1, 20),
+                    1: Fraction(20-ac + attack_mod+1, 20)})
+    return atk_pmf
+
+def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
+    #prob_miss = ac - attack_mod -2
+    atk_pmf = attack_pmf(ac, attack_mod)
+    total_dmg = add(dmg_pmf, const_pmf(dmg_mod))
+    result = multiply(atk_pmf, total_dmg)
+    return result
 
 def main():
     pmf = Pmf({1: Fraction(1,2),
