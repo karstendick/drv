@@ -2,6 +2,7 @@ from collections import defaultdict
 import itertools
 from fractions import Fraction
 from math import sqrt
+from copy import deepcopy
 
 
 class Drv(defaultdict):
@@ -56,6 +57,30 @@ class Drv(defaultdict):
     def __repr__(self):
         return self.__str__()
 
+
+class Dice(defaultdict):
+    """A Dice object is a defaultdict of int to int, mapping a die size to the
+    number of those dice.
+    E.g. {4: 2, 6: 3} is 2d4 + 3d6
+    """
+    def __init__(self, d):
+        defaultdict.__init__(self, int, d)
+
+    def add(self, d):
+        result = deepcopy(defaultdict(int, self))
+        for k, v in d.items():
+            result[k] += v
+        return result
+
+    def double(self):
+        pass
+
+def add_dice(d1, d2):
+    result = defaultdict(int)
+    result = deepcopy(defaultdict(int, d1))
+    for k, v in d2.items():
+        result[k] += v
+    return result
 
 def die_pmf(n):
     return Drv({k: Fraction(1, n) for k in range(1, n+1)})
@@ -128,6 +153,11 @@ def main():
     four_d4 = add(d4, add(d4, add(d4, d4)))
     drv = Drv(four_d4)
     attack_roll = attack_dmg_pmf(13, 5, d6, 3)
+
+    dd = Dice({4:2, 6:3})
+    # d2 = add_dice(d, {6:1})
+    dd.add({6:1})
+
     import pdb; pdb.set_trace()
     print('done')
 
