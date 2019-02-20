@@ -20,7 +20,6 @@ class TestDrv(unittest.TestCase):
               4: Fraction(1,4)}
         self.assertEqual(d4, die_pmf(4))
 
-class TestDrv(unittest.TestCase):
     def test_expected_value(self):
         drv = Drv(die_pmf(6))
         self.assertEqual(Fraction(7,2), drv.expected_value())

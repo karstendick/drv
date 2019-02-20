@@ -119,7 +119,7 @@ def multiply(x, y):
 # defaultdict(<class 'int'>, {0: Fraction(6, 5), 1: Fraction(-1, 4), 2: Fraction(1, 20)})
 #
 # TODO: Bug: don't just double damage on a crit; instead, roll more dice
-# i.e.: 2d6, NOT 2*(1d6)
+# e.g.: 2d6, NOT 2*(1d6)
 def attack_pmf(ac, attack_mod):
     atk_pmf = Drv({0: Fraction(ac - attack_mod - 1, 20),
                    1: Fraction(20 - ac + attack_mod, 20),
