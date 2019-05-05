@@ -73,7 +73,7 @@ class Dice(defaultdict):
         return result
 
     def double(self):
-        pass
+        return {k: 2*v for k,v in self.items()}
 
 def add_dice(d1, d2):
     result = defaultdict(int)
@@ -142,6 +142,20 @@ def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
     total_dmg = add(dmg_pmf, const_pmf(dmg_mod))
     result = multiply(atk_pmf, total_dmg)
     return result
+
+def pr_crit(ac, attack_mod):
+    # TODO: Advantage and disadvantage
+    # TODO: Hafling Lucky trait to re-roll 1's
+    return Fraction(1,20)
+
+def pr_hit(ac, attack_mod):
+    pass
+
+def pr_miss(ac, attack_mod):
+    pass
+
+def attack_roll(ac, attack_mod, dmg_dice, dmg_mod):
+    pass
 
 def main():
     pmf = Drv({1: Fraction(1, 2),
