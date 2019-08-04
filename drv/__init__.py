@@ -75,6 +75,13 @@ class Dice(defaultdict):
     def double(self):
         return {k: 2*v for k,v in self.items()}
 
+    def to_drv(self):
+        result = Drv({0:1}) # the "null" Drv to use as an accumulator
+        for dice_denom, dice_num in self.items():
+            for i in range(dice_num):
+                result = add(result, die_pmf(dice_denom))
+        return result
+
 def add_dice(d1, d2):
     result = defaultdict(int)
     result = deepcopy(defaultdict(int, d1))
@@ -112,6 +119,13 @@ def multiply(x, y):
         z[z_i] += x[x_i] * y[y_i]
     return Drv(z)
 
+def constant_probility_multiply(k, x):
+    z = defaultdict(int, {})
+    for value, prob in x.items():
+        z[value] = prob * k
+    return z
+
+
 # TODO: debug this so that it never returns negative probabilities, e.g.:
 # attack_pmf(1, 5)
 # defaultdict(<class 'int'>, {0: Fraction(-1, 4), 1: Fraction(6, 5), 2: Fraction(1, 20)})
@@ -138,9 +152,17 @@ def attack_dmg_mod_pmf(ac, attack_mod):
 
 def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
     #prob_miss = ac - attack_mod -2
-    atk_pmf = attack_pmf(ac, attack_mod)
-    total_dmg = add(dmg_pmf, const_pmf(dmg_mod))
-    result = multiply(atk_pmf, total_dmg)
+    # atk_pmf = attack_pmf(ac, attack_mod)
+    # total_dmg = add(dmg_pmf, const_pmf(dmg_mod))
+    # result = multiply(atk_pmf, total_dmg)
+
+    attack_hit_results = constant_probility_multiply(pr_hit(ac, attack_mod), dmg_pmf)
+    crit_results = constant_probility_multiply(pr_crit(ac, attack_mod), Dice(dmg_pmf).double())
+    result = defaultdict(int, {})
+    result = {**attack_hit_results, **crit_results}
+    result[0] = pr_miss(ac, attack_mod)
+
+    # return Drv(result)
     return result
 
 def pr_crit(ac, attack_mod):
@@ -149,10 +171,12 @@ def pr_crit(ac, attack_mod):
     return Fraction(1,20)
 
 def pr_hit(ac, attack_mod):
-    pass
+    # TODO: crits on 19s
+    count_of_hits = max(0, min(18, 20 - ac + attack_mod))
+    return Fraction(count_of_hits, 20)
 
 def pr_miss(ac, attack_mod):
-    pass
+    return 1 - pr_crit(ac, attack_mod) - pr_hit(ac, attack_mod)
 
 def attack_roll(ac, attack_mod, dmg_dice, dmg_mod):
     pass
@@ -166,7 +190,7 @@ def main():
     d4 = die_pmf(4)
     four_d4 = add(d4, add(d4, add(d4, d4)))
     drv = Drv(four_d4)
-    attack_roll = attack_dmg_pmf(13, 5, d6, 3)
+    attack_roll = attack_dmg_pmf(15, 5, d6, 3)
 
     dd = Dice({4:2, 6:3})
     # d2 = add_dice(d, {6:1})
