@@ -125,6 +125,15 @@ def constant_probility_multiply(k, x):
         z[value] = prob * k
     return z
 
+def support(x):
+    return sorted([value for value, prob in x.items() if prob > 0])
+
+def piecewise_add(x,y):
+    z = defaultdict(int, {})
+    for i in set().union(support(x), support(y)):
+        z[i] = x[i] + y[i]
+    return z
+
 
 # TODO: debug this so that it never returns negative probabilities, e.g.:
 # attack_pmf(1, 5)
@@ -156,10 +165,10 @@ def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
     # total_dmg = add(dmg_pmf, const_pmf(dmg_mod))
     # result = multiply(atk_pmf, total_dmg)
 
-    attack_hit_results = constant_probility_multiply(pr_hit(ac, attack_mod), dmg_pmf)
-    crit_results = constant_probility_multiply(pr_crit(ac, attack_mod), Dice(dmg_pmf).double())
+    attack_hit_results = constant_probility_multiply(pr_hit(ac, attack_mod), Dice(dmg_pmf).to_drv())
+    crit_results = constant_probility_multiply(pr_crit(ac, attack_mod), Dice(Dice(dmg_pmf).double()).to_drv())
     result = defaultdict(int, {})
-    result = {**attack_hit_results, **crit_results}
+    result = piecewise_add(attack_hit_results, crit_results)
     result[0] = pr_miss(ac, attack_mod)
 
     # return Drv(result)
@@ -190,7 +199,7 @@ def main():
     d4 = die_pmf(4)
     four_d4 = add(d4, add(d4, add(d4, d4)))
     drv = Drv(four_d4)
-    attack_roll = attack_dmg_pmf(15, 5, d6, 3)
+    attack_roll = attack_dmg_pmf(15, 5, Dice({6:1}), 3)
 
     dd = Dice({4:2, 6:3})
     # d2 = add_dice(d, {6:1})
