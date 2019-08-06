@@ -172,8 +172,7 @@ def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
     result = piecewise_add(attack_hit_results, crit_results)
     result[0] = pr_miss(ac, attack_mod)
 
-    # return Drv(result)
-    return result
+    return Drv(result)
 
 def pr_crit(ac, attack_mod):
     # TODO: Advantage and disadvantage
