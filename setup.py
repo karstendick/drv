@@ -10,7 +10,8 @@ setup(name='drv',
       classifiers=['Programming Language :: Python :: 3 :: Only'],
       py_modules=['drv'],
       install_requires=[
-          'nose'
+          'nose',
+          'matplotlib==3.1.1',
       ],
       entry_points='''
           [console_scripts]

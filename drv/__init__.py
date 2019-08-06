@@ -5,6 +5,8 @@ from math import sqrt
 from copy import deepcopy
 import operator
 
+import matplotlib.pyplot as plt
+
 
 class Drv(defaultdict):
     """A Drv (discrete random variable) is a defaultdict of int to Fraction,
@@ -174,11 +176,16 @@ def main():
     drv = Drv(four_d4)
 
     dd = Dice({4:2, 6:3})
-    # d2 = add_dice(d, {6:1})
     dd.add({6:1})
 
     attack_roll = attack_dmg_pmf(15, 5, Dice({6:1}), 3)
     print(attack_roll)
+
+
+
+    plt.bar(attack_roll.keys(), attack_roll.values())
+    plt.xticks(attack_roll.support())
+    plt.show()
 
     import pdb; pdb.set_trace()
     print('done')
