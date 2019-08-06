@@ -74,7 +74,8 @@ class Dice(defaultdict):
         return result
 
     def double(self):
-        return {k: 2*v for k,v in self.items()}
+        self = Dice(defaultdict(int, {k: 2*v for k,v in self.items()}))
+        return self
 
     def to_drv(self):
         result = Drv({0:1}) # the "null" Drv to use as an accumulator
