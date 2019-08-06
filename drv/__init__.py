@@ -13,7 +13,6 @@ class Drv(defaultdict):
     """
     def __init__(self, mapping):
         probability_sum = sum(mapping.values())
-
         if probability_sum != 1:
             raise ValueError("Probabilities must sum to 1; received invalid value {}"
                              .format(probability_sum))
@@ -71,7 +70,8 @@ class Dice(defaultdict):
         result = deepcopy(defaultdict(int, self))
         for k, v in d.items():
             result[k] += v
-        return result
+        self = Dice(defaultdict(int, result))
+        return self
 
     def double(self):
         self = Dice(defaultdict(int, {k: 2*v for k,v in self.items()}))
@@ -83,13 +83,6 @@ class Dice(defaultdict):
             for i in range(dice_num):
                 result = add(result, die_pmf(dice_denom))
         return result
-
-def add_dice(d1, d2):
-    result = defaultdict(int)
-    result = deepcopy(defaultdict(int, d1))
-    for k, v in d2.items():
-        result[k] += v
-    return result
 
 def die_pmf(n):
     return Drv({k: Fraction(1, n) for k in range(1, n+1)})
