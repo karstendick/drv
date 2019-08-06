@@ -143,30 +143,6 @@ def piecewise_add(x,y):
     return z
 
 
-# TODO: debug this so that it never returns negative probabilities, e.g.:
-# attack_pmf(1, 5)
-# defaultdict(<class 'int'>, {0: Fraction(-1, 4), 1: Fraction(6, 5), 2: Fraction(1, 20)})
-# attack_pmf(30, 5)
-# defaultdict(<class 'int'>, {0: Fraction(6, 5), 1: Fraction(-1, 4), 2: Fraction(1, 20)})
-#
-# TODO: Bug: don't just double damage on a crit; instead, roll more dice
-# e.g.: 2d6, NOT 2*(1d6)
-def attack_pmf(ac, attack_mod):
-    atk_pmf = Drv({0: Fraction(ac - attack_mod - 1, 20),
-                   1: Fraction(20 - ac + attack_mod, 20),
-                   2: Fraction(1, 20)})
-    return atk_pmf
-# TODO: Likewise, e.g.:
-# attack_dmg_mod_pmf(1, 5)
-# defaultdict(<class 'int'>, {0: Fraction(-1, 4), 1: Fraction(5, 4)})
-# attack_dmg_mod_pmf(30, 5)
-# defaultdict(<class 'int'>, {0: Fraction(6, 5), 1: Fraction(-1, 5)})
-def attack_dmg_mod_pmf(ac, attack_mod):
-    atk_pmf = Drv({0: Fraction(ac - attack_mod - 1, 20),
-                   1: Fraction(20 - ac + attack_mod + 1, 20)})
-    return atk_pmf
-
-
 def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
     attack_hit_results_wo_mod = constant_probility_multiply(pr_hit(ac, attack_mod), dmg_pmf.to_drv())
     attack_hit_results = constant_outcome_add(dmg_mod, attack_hit_results_wo_mod)
@@ -193,8 +169,6 @@ def pr_hit(ac, attack_mod):
 def pr_miss(ac, attack_mod):
     return 1 - pr_crit(ac, attack_mod) - pr_hit(ac, attack_mod)
 
-def attack_roll(ac, attack_mod, dmg_dice, dmg_mod):
-    pass
 
 def main():
     pmf = Drv({1: Fraction(1, 2),
