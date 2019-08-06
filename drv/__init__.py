@@ -3,6 +3,7 @@ import itertools
 from fractions import Fraction
 from math import sqrt
 from copy import deepcopy
+import operator
 
 
 class Drv(defaultdict):
@@ -51,7 +52,7 @@ class Drv(defaultdict):
 
     def __str__(self):
         m = {value: round(float(prob), 5) for value, prob in self.items() if prob > 0}
-        l = ["{0: >3} {1: >8.2%}".format(value, prob) for value, prob in m.items()]
+        l = ["{0: >3} {1: >8.2%}".format(value, prob) for value, prob in sorted(m.items(), key=operator.itemgetter(0))]
         return "\n".join(l)
 
     def __repr__(self):
