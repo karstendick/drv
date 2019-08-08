@@ -80,7 +80,7 @@ class Dice(defaultdict):
         return self
 
     def to_drv(self):
-        result = Drv({0:1}) # the "null" Drv to use as an accumulator
+        result = Drv({0:1}) # the "identity" Drv to use as an accumulator
         for dice_denom, dice_num in self.items():
             for i in range(dice_num):
                 result = add(result, die_pmf(dice_denom))
