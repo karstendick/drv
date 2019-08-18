@@ -1,4 +1,5 @@
 from collections import defaultdict
+import itertools
 import operator
 from math import sqrt
 
@@ -52,3 +53,27 @@ class Drv(defaultdict):
 
     def __repr__(self):
         return self.__str__()
+
+    def __add__(self, other):
+        """Adds two Drvs to get their convolution.
+        This operation is commutative and associative.
+
+        """
+        # First, calculate the range of the support of the sum, z:
+        z_min = self.min() + other.min()
+        z_max = self.max() + other.max()
+
+        z = defaultdict(int, {})
+        # foreach value in pmf of z:
+        for n in range(z_min, z_max+1):
+            # calculate the convolution
+            z[n] = sum([self[k] * other[n - k]
+                        for k in range(n+1)])
+        return Drv(z)
+
+    def __mul__(self, other):
+        z = defaultdict(int, {})
+        for x_i, y_i in itertools.product(self.support(), other.support()):
+            z_i = x_i * y_i
+            z[z_i] += self[x_i] * other[y_i]
+        return Drv(z)

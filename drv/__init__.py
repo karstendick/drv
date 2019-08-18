@@ -1,14 +1,10 @@
 from collections import defaultdict
-import itertools
 from fractions import Fraction
 from copy import deepcopy
 
 import matplotlib.pyplot as plt
 
 from drv.drv import Drv
-
-
-
 
 
 class Dice(defaultdict):
@@ -34,7 +30,7 @@ class Dice(defaultdict):
         result = Drv({0:1}) # the "identity" Drv to use as an accumulator
         for dice_denom, dice_num in self.items():
             for i in range(dice_num):
-                result = add(result, die_pmf(dice_denom))
+                result += die_pmf(dice_denom)
         return result
 
 def die_pmf(n):
@@ -42,30 +38,6 @@ def die_pmf(n):
 
 def const_pmf(c):
     return Drv({c: Fraction(1, 1)})
-
-def add(x, y):
-    """Takes two Drvs, x and y, and adds them to get z, the convolution. This
-    operation is commutative and associative.
-
-    """
-    # First, calculate the range of the support of the sum, z:
-    z_min = x.min() + y.min()
-    z_max = x.max() + y.max()
-
-    z = defaultdict(int, {})
-    # foreach value in pmf of z:
-    for n in range(z_min, z_max+1):
-        # calculate the convolution
-        z[n] = sum([x[k] * y[n - k]
-                    for k in range(n+1)])
-    return Drv(z)
-
-def multiply(x, y):
-    z = defaultdict(int, {})
-    for x_i, y_i in itertools.product(x.support(), y.support()):
-        z_i = x_i * y_i
-        z[z_i] += x[x_i] * y[y_i]
-    return Drv(z)
 
 def constant_probility_multiply(k, x):
     z = defaultdict(int, {})
