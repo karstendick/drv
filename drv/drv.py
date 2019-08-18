@@ -1,7 +1,15 @@
 from collections import defaultdict
+from fractions import Fraction
 import itertools
 import operator
 from math import sqrt
+
+
+def die_pmf(n):
+    return Drv({k: Fraction(1, n) for k in range(1, n+1)})
+
+def const_pmf(c):
+    return Drv({c: Fraction(1, 1)})
 
 class Drv(defaultdict):
     """A Drv (discrete random variable) is a defaultdict of int to Fraction,

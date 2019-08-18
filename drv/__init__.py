@@ -1,43 +1,11 @@
 from collections import defaultdict
 from fractions import Fraction
-from copy import deepcopy
 
 import matplotlib.pyplot as plt
 
 from drv.drv import Drv
+from drv.dice import Dice
 
-
-class Dice(defaultdict):
-    """A Dice object is a defaultdict of int to int, mapping a die size to the
-    number of those dice.
-    E.g. {4: 2, 6: 3} is 2d4 + 3d6
-    """
-    def __init__(self, d):
-        defaultdict.__init__(self, int, d)
-
-    def add(self, d):
-        result = deepcopy(defaultdict(int, self))
-        for k, v in d.items():
-            result[k] += v
-        self = Dice(defaultdict(int, result))
-        return self
-
-    def double(self):
-        self = Dice(defaultdict(int, {k: 2*v for k,v in self.items()}))
-        return self
-
-    def to_drv(self):
-        result = Drv({0:1}) # the "identity" Drv to use as an accumulator
-        for dice_denom, dice_num in self.items():
-            for i in range(dice_num):
-                result += die_pmf(dice_denom)
-        return result
-
-def die_pmf(n):
-    return Drv({k: Fraction(1, n) for k in range(1, n+1)})
-
-def const_pmf(c):
-    return Drv({c: Fraction(1, 1)})
 
 def constant_probility_multiply(k, x):
     z = defaultdict(int, {})
@@ -89,8 +57,8 @@ def pr_miss(ac, attack_mod):
 
 
 def main():
-
-    attack_roll = attack_dmg_pmf(15, 5, Dice({6:1}), 3)
+    d6 = Dice({6:1})
+    attack_roll = attack_dmg_pmf(15, 5, d6, 3)
     print(attack_roll)
 
 

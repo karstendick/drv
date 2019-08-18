@@ -2,7 +2,7 @@ import unittest
 from fractions import Fraction
 from math import sqrt
 
-from drv import *
+from drv.drv import *
 
 class TestDrv(unittest.TestCase):
     def test_probability_sum(self):

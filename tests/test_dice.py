@@ -1,7 +1,7 @@
 import unittest
 from fractions import Fraction
 
-from drv import *
+from drv.dice import *
 
 class TestDice(unittest.TestCase):
     def perform_add(self, a, b, expected):
