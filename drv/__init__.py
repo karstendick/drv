@@ -7,7 +7,7 @@ from drv.drv import Drv
 from drv.dice import Dice
 
 
-def constant_probility_multiply(k, x):
+def constant_probability_multiply(k, x):
     z = defaultdict(int, {})
     for value, prob in x.items():
         z[value] = prob * k
@@ -30,10 +30,10 @@ def piecewise_add(x,y):
 
 
 def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
-    attack_hit_results_wo_mod = constant_probility_multiply(pr_hit(ac, attack_mod), dmg_pmf.to_drv())
+    attack_hit_results_wo_mod = constant_probability_multiply(pr_hit(ac, attack_mod), dmg_pmf.to_drv())
     attack_hit_results = constant_outcome_add(dmg_mod, attack_hit_results_wo_mod)
 
-    crit_results_wo_mod = constant_probility_multiply(pr_crit(ac, attack_mod), dmg_pmf.double().to_drv())
+    crit_results_wo_mod = constant_probability_multiply(pr_crit(ac, attack_mod), dmg_pmf.double().to_drv())
     crit_results = constant_outcome_add(dmg_mod, crit_results_wo_mod)
 
     result = defaultdict(int, {})
