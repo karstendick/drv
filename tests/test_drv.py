@@ -3,6 +3,7 @@ from fractions import Fraction
 from math import sqrt
 
 from drv.drv import *
+from drv.dice import die_pmf, const_pmf
 
 class TestDrv(unittest.TestCase):
     def test_probability_sum(self):
