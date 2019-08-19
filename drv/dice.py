@@ -5,6 +5,12 @@ from fractions import Fraction
 from drv.drv import Drv
 
 
+def die_pmf(n):
+    return Drv({k: Fraction(1, n) for k in range(1, n+1)})
+
+def const_pmf(c):
+    return Drv({c: Fraction(1, 1)})
+
 class Dice(defaultdict):
     """A Dice object is a defaultdict of int to int, mapping a die size to the
     number of those dice.
