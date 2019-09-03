@@ -5,42 +5,12 @@ import matplotlib.pyplot as plt
 
 from drv.drv import Drv
 from drv.dice import Dice
+from drv.attackroll import *
 
 
-def constant_probability_multiply(k, x):
-    z = defaultdict(int, {})
-    for value, prob in x.items():
-        z[value] = prob * k
-    return z
-
-def constant_outcome_add(k, x):
-    z = defaultdict(int, {})
-    for value, prob in x.items():
-        z[value + k] = prob
-    return z
-
-def support(x):
-    return sorted([value for value, prob in x.items() if prob > 0])
-
-def piecewise_add(x,y):
-    z = defaultdict(int, {})
-    for i in set().union(support(x), support(y)):
-        z[i] = x[i] + y[i]
-    return z
 
 
-def attack_dmg_pmf(ac, attack_mod, dmg_pmf, dmg_mod):
-    attack_hit_results_wo_mod = constant_probability_multiply(pr_hit(ac, attack_mod), dmg_pmf.to_drv())
-    attack_hit_results = constant_outcome_add(dmg_mod, attack_hit_results_wo_mod)
 
-    crit_results_wo_mod = constant_probability_multiply(pr_crit(ac, attack_mod), dmg_pmf.double().to_drv())
-    crit_results = constant_outcome_add(dmg_mod, crit_results_wo_mod)
-
-    result = defaultdict(int, {})
-    result = piecewise_add(attack_hit_results, crit_results)
-    result[0] = pr_miss(ac, attack_mod)
-
-    return Drv(result)
 
 def pr_crit(ac, attack_mod):
     # TODO: Advantage and disadvantage
@@ -60,7 +30,7 @@ def plot_drv(drv):
     plt.xticks(drv.support())
     # plt.show()
 
-def main():
+def plot_weapons():
     shortsword = Dice({6:1})
     greataxe = Dice({12:1})
     greatsword = Dice({6:2})
@@ -93,9 +63,15 @@ def main():
 
     plt.show()
 
+def main():
+    probs = get_probs(15,5)
+    print(probs)
+
+    plot_weapons()
 
     import pdb; pdb.set_trace()
     print('done')
+
 
 if __name__ == "__main__":
     main()
