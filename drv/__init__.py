@@ -8,23 +8,6 @@ from drv.dice import Dice
 from drv.attackroll import *
 
 
-
-
-
-
-def pr_crit(ac, attack_mod):
-    # TODO: Advantage and disadvantage
-    # TODO: Hafling Lucky trait to re-roll 1's
-    return Fraction(1,20)
-
-def pr_hit(ac, attack_mod):
-    # TODO: crits on 19s
-    count_of_hits = max(0, min(18, 20 - ac + attack_mod))
-    return Fraction(count_of_hits, 20)
-
-def pr_miss(ac, attack_mod):
-    return 1 - pr_crit(ac, attack_mod) - pr_hit(ac, attack_mod)
-
 def plot_drv(drv):
     plt.bar(drv.keys(), drv.values())
     plt.xticks(drv.support())
