@@ -60,7 +60,6 @@ def roll_to_outcome(ac, attack_mod, crits_on, roll):
     return Outcome.MISS
 
 def get_probs(ac, attack_mod, crits_on=None, roll_type=None):
-    this_roll_to_outcome = partial(roll_to_outcome, ac, attack_mod, crits_on)
     if not roll_type:
         rolls = range(1,21)
     elif roll_type == RollType.ADV:
@@ -72,6 +71,8 @@ def get_probs(ac, attack_mod, crits_on=None, roll_type=None):
     elif roll_type == RollType.ELVEN_ACCURACY:
         roll_pairs = product(range(1,21), repeat=3)
         rolls = list(map(max, roll_pairs))
+
+    this_roll_to_outcome = partial(roll_to_outcome, ac, attack_mod, crits_on)
     outcomes = map(this_roll_to_outcome, rolls)
     def outcome_reducer(accum, elem):
         accum[elem] += Fraction(1, len(rolls))
