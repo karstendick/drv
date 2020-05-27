@@ -37,7 +37,7 @@ def plot_weapons(ac, crits_on=None, roll_type=None):
     plt.show()
 
 
-    f, axarr = plt.subplots(3, sharex=True, sharey=True)
+    _, axarr = plt.subplots(3, sharex=True, sharey=True)
     axarr[0].bar(shortsword_attack_roll.keys(), shortsword_attack_roll.values())
     axarr[0].set_title('Shortsword')
     axarr[1].bar(greataxe_attack_roll.keys(), greataxe_attack_roll.values())
