@@ -61,23 +61,22 @@ def print_probs(ac):
     print(elven_accuracy_probs)
 
     champion_adv_probs = get_probs(ac,5, crits_on=CritsOn.C19, roll_type=RollType.ADV)
-    print(champion_adv_probs)
+    print("Champion with advantage: ", champion_adv_probs)
 
     champion_elven_accuracy_probs = get_probs(ac,5, crits_on=CritsOn.C19, roll_type=RollType.ELVEN_ACCURACY)
-    print(champion_elven_accuracy_probs)
+    print("Champion with Elven Accuracy: ", champion_elven_accuracy_probs)
 
     champion18_elven_accuracy_probs = get_probs(ac,5, crits_on=CritsOn.C18_19, roll_type=RollType.ELVEN_ACCURACY)
-    print(champion18_elven_accuracy_probs)
+    print("Champion (critting on 18s and 19s) with Elven Accuracy: ", champion18_elven_accuracy_probs)
 
 
 def main():
-    # print_probs(15,5)
-    print_probs(1)
+    # print_probs(15)
 
-    plot_weapons(1)
+    plot_weapons(15)
     # plot_weapons(1, CritsOn.C19, RollType.ADV)
 
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     print('done')
 
 
